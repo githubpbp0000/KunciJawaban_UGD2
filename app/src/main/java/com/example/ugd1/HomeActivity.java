@@ -1,14 +1,17 @@
 package com.example.ugd1;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
-import android.content.Intent;
+import android.content.DialogInterface;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.TextView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+
+import com.example.ugd1.entity.Mahasiswa;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -16,44 +19,53 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        setTitle("Data Mahasiswa");
 
-        String npm = getIntent().getStringExtra("NPM");
-        TextView tvWelcome = findViewById(R.id.tvWelcome);
+        //  Fragment yang pertama kali terlihat adalah fragment mahasiswa
+        changeFragment(new FragmentMahasiswa());
+    }
 
-        tvWelcome.setText("Selamat datang " + npm);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Disini kita menghubungkan menu yang telah kita buat dengan activity ini
+        MenuInflater menuInflater = new MenuInflater(this);
+        menuInflater.inflate(R.menu.home_menu,menu);
 
-        Button btnSubmit = findViewById(R.id.btnSubmit);
-        RadioGroup rgOptions = findViewById(R.id.radioGroup);
+        return true;
+    }
 
-        btnSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Integer option = rgOptions.getCheckedRadioButtonId();
-                Intent newInput = new Intent();
-                RadioButton rb;
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(item.getItemId() == R.id.menu_mahasiswa){
+            //  Jika menu yang dipilih adalah Mahasiswa maka ganti fragmentnya dengan FragmentMahasiswa
+            changeFragment(new FragmentMahasiswa());
+            setTitle("Data Mahasiswa");
+        }else if(item.getItemId() == R.id.menu_dosen){
+            //  Jika menu yang dipilih adalah Dosen maka ganti fragmentnya dengan FragmentDosen
+            changeFragment(new DosenFragment());
+            setTitle("Data Dosen");
+        }else{
+            //  Jika menu yang dipilih adalah menu Exit, maka tampilkan sebuah dialog
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-                switch (option){
-                    case R.id.mudah:
-                        rb = findViewById(R.id.mudah);
-                        newInput.putExtra("answer", rb.getText());
-                        setResult(101,newInput);
-                        break;
+            builder.setMessage("Are you sure want to exit?")
+                    .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            //  Keluar dari aplikasi
+                            finishAndRemoveTask();
+                        }
+                    })
+                    .show();
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
-                    case R.id.mudah_sekali:
-                        rb = findViewById(R.id.mudah_sekali);
-                        newInput.putExtra("answer", rb.getText());
-                        setResult(102,newInput);
-                        break;
-
-                    case R.id.mudah_banget:
-                        rb = findViewById(R.id.mudah_banget);
-                        newInput.putExtra("answer", rb.getText());
-                        setResult(103,newInput);
-                        break;
-                }
-
-                finish();
-            }
-        });
+    //  Method untuk mengubah fragment
+    public void changeFragment(Fragment fragment){
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.layout_fragment,fragment)
+                .commit();
     }
 }

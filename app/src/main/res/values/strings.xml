@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">UGD1</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="menu_lainnya">Menu Lainnya</string>
+    <string name="student_login">Student Login</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="clear_field">Clear Field</string>
+    <string name="login">Login</string>
+    <string name="dosen_photo">Dosen Photo</string>
+    <string name="nama_dosen">Nama Dosen</string>
+    <string name="_180709598">180709598</string>
+    <string name="bergabung_sejak_5_tahun_lalu">Bergabung Sejak 5 Tahun Lalu</string>
+    <string name="nama_mahasiswa">Nama Mahasiswa</string>
+    <string name="tahun_masuk_ipk">Tahun Masuk - IPK</string>
+    <string name="mahasiswa">Mahasiswa</string>
+    <string name="dosen">Dosen</string>
+    <string name="exit_app">Exit App</string>
 </resources>

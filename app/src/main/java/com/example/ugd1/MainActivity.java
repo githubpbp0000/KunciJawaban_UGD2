@@ -1,74 +1,92 @@
 package com.example.ugd1;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
+
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputLayout;
 
 public class MainActivity extends AppCompatActivity {
+    //  Attribute yang akan kita pakai
+    private TextInputLayout inputUsername;
+    private TextInputLayout inputPassword;
+    private ConstraintLayout mainLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        EditText etNPM = findViewById(R.id.etNPM);
-        EditText etPassword = findViewById(R.id.etPassword);
+        //  Ubah Title pada App Bar Aplikasi
+        setTitle("User Login");
+
+        //  Hubungkan variabel dengan view di layoutnya.
+        inputUsername = findViewById(R.id.inputLayoutUsername);
+        inputPassword = findViewById(R.id.inputLayoutPassword);
+        mainLayout = findViewById(R.id.mainLayout);
 
         Button btnClear = findViewById(R.id.btnClear);
         Button btnLogin = findViewById(R.id.btnLogin);
 
+        //  Aksi btnClear ketika di klik
         btnClear.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                etNPM.setText("");
-                etPassword.setText("");
+                String username = inputUsername.getEditText().getText().toString();
+                String password = inputPassword.getEditText().getText().toString();
+
+                //  Mengkosongkan Input
+                inputUsername.getEditText().setText("");
+                inputPassword.getEditText().setText("");
+
+                //  Memunculkan SnackBar
+                Snackbar.make(mainLayout,"Text Cleared Success",Snackbar.LENGTH_LONG)
+                        .setAction("Cancel", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                inputUsername.getEditText().setText(username);
+                                inputPassword.getEditText().setText(password);
+                            }
+                        })
+                        .show();
             }
         });
 
+        //  Aksi pada btnLogin
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(etNPM.getText().toString().isEmpty() || etPassword.getText().toString().isEmpty()){
-                    Toast.makeText(MainActivity.this,"Username Atau Password Kosong",Toast.LENGTH_LONG).show();
-                }
-                else if(etNPM.getText().toString().equals("1807XXXX") && etPassword.getText().toString().equals("wendy")){
-                    Toast.makeText(MainActivity.this,"Username Atau Password Benar",Toast.LENGTH_LONG).show();
-                    Intent moveHome = new Intent(MainActivity.this,HomeActivity.class);
-                    moveHome.putExtra("NPM",etNPM.getText());
+                Boolean checkLogin = true;
 
-                    startActivityForResult(moveHome,401);
+                String username = inputUsername.getEditText().getText().toString();
+                String password = inputPassword.getEditText().getText().toString();
+
+                //  Pengecekan apakah inputan kosong
+                if(username.isEmpty()){
+                    inputUsername.setError("Username can'nt be empty");
+                    checkLogin = false;
                 }
-                else{
-                    Toast.makeText(MainActivity.this,"Username Atau Password Salah",Toast.LENGTH_LONG).show();
+
+                //  Pengecekan apakah Inputan kosong
+                if(password.isEmpty()){
+                    inputPassword.setError("Password must be filled with text");
+                    checkLogin = false;
                 }
+
+                //  Ganti Password dengan NPM kalian.
+                if(username.equals("admin") && password.equals("9598"))
+                    checkLogin = true;
+
+                if(!checkLogin) return;
+
+                Intent moveHome = new Intent(MainActivity.this,HomeActivity.class);
+                startActivity(moveHome);
             }
         });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        TextView tvResult = findViewById(R.id.tvAnswer);
-        String result = data.getStringExtra("answer");
-        tvResult.setText(result);
-
-        if(requestCode == 401){
-            if(resultCode == 101){
-                tvResult.setBackgroundColor(Color.rgb(150,0,0));
-            }else if(resultCode == 102){
-                tvResult.setBackgroundColor(Color.rgb(0,150,0));
-            }else{
-                tvResult.setBackgroundColor(Color.rgb(0,0,150));
-            }
-        }
     }
 }
